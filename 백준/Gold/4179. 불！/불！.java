@@ -56,16 +56,24 @@ public class Main {
             }
         }
 
+
+        Integer result = null;
+
         queue.add(jihun);
+        Loop1 :
         while (!queue.isEmpty()) {
             Position position = queue.poll();
             for (int i = 0; i < 4; i++) {
                 int nx = position.x + dx[i];
                 int ny = position.y + dy[i];
                 if (nx < 0 || ny < 0 || nx >= n || ny >= m) {
-                    continue;
+                    result = board[position.x][position.y];
+                    break Loop1;
                 }
                 if (board[nx][ny] != 0) {
+                    continue;
+                }
+                if (fireBoard[nx][ny] > 0 && board[position.x][position.y] + 1 >= fireBoard[nx][ny]) {
                     continue;
                 }
                 board[nx][ny] = board[position.x][position.y] + 1;
@@ -73,20 +81,7 @@ public class Main {
             }
         }
 
-        Integer result = Integer.MAX_VALUE;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (i == 0 || i == n - 1 || j == 0 || j == m - 1) {
-                    if (board[i][j] < 1 || (fireBoard[i][j] > 0 && board[i][j] > 0 && fireBoard[i][j] <= board[i][j])) {
-                        continue;
-                    }
-                    result = Math.min(result, board[i][j]);
-                }
-            }
-        }
-
-        bw.write(result == Integer.MAX_VALUE || result <= 0 ? "IMPOSSIBLE" : String.valueOf(result));
+        bw.write(result == null ? "IMPOSSIBLE" : String.valueOf(result));
         bw.flush();
         bw.close();
     }
